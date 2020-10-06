@@ -86,6 +86,46 @@
 /************************************************************************/
 /******/ ({
 
+/***/ "./main/config/config.ts":
+/*!*******************************!*\
+  !*** ./main/config/config.ts ***!
+  \*******************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+// import * as path from 'path';
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.database = void 0;
+// let workpath = process.env.HOME + '//AppData//Roaming//thinkord'
+// const config = {
+//   "development": {
+//     "dialect": "sqlite",
+//     "storage": "main/db.sqlite3",
+//     "operatorsAliases": false
+//   },
+//   "test": {
+//     "dialect": "sqlite",
+//     "storage": 'main/db_tst.sqlite3',
+//     "operatorsAliases": false
+//   },
+//   "production": {
+//     "dialect": "sqlite",
+//     "storage": path.join(workpath, '/db_prd.sqlite3'),
+//     "operatorsAliases": false
+//   }
+// }
+// export { config }
+const sequelize_1 = __webpack_require__(/*! sequelize */ "sequelize");
+exports.database = new sequelize_1.Sequelize({
+    dialect: 'sqlite',
+    storage: 'main/db.sqlite3'
+});
+
+
+/***/ }),
+
 /***/ "./main/electron.ts":
 /*!**************************!*\
   !*** ./main/electron.ts ***!
@@ -129,95 +169,18 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const electron_1 = __webpack_require__(/*! electron */ "electron");
 const path = __importStar(__webpack_require__(/*! path */ "path"));
-// import db from "./models/index"
-const sequelize_1 = __webpack_require__(/*! sequelize */ "sequelize");
 const electron_is_dev_1 = __importDefault(__webpack_require__(/*! electron-is-dev */ "./node_modules/electron-is-dev/index.js"));
 const FileChannel_1 = __webpack_require__(/*! ./ipc/FileChannel */ "./main/ipc/FileChannel.ts");
+const index_1 = __webpack_require__(/*! ./models/index */ "./main/models/index.ts");
+// import { Node } from "./models/node.model";
 class Main {
     init(channel) {
         return __awaiter(this, void 0, void 0, function* () {
-            const sequelize = new sequelize_1.Sequelize({
-                dialect: 'sqlite',
-                storage: 'main/db.sqlite3'
-            });
+            const db = yield index_1.DBCreate.create();
+            console.log("db: ", db);
             electron_1.app.on('ready', this.createWindow);
             electron_1.app.on('window-all-closed', this.onWindowAllClosed);
             electron_1.app.on('activate', this.onActivate);
-            try {
-                yield sequelize.authenticate();
-                console.log('Connection has been established successfully.');
-            }
-            catch (error) {
-                console.error('Unable to connect to the database:', error);
-            }
-            // db.sequelize
-            //     .sync({ force: true })
-            //     .then(() => {
-            //         db.Folder.create({ name: 'Martin' })
-            //             .then(() => {
-            //                 console.log('Folder created.')
-            //             })
-            //             .catch((error) => {
-            //                 console.error(error)
-            //             })
-            //         db.Folder.create({ name: 'Tim' })
-            //             .then(() => {
-            //                 console.log('Folder created.')
-            //             })
-            //             .catch((error) => {
-            //                 console.error(error)
-            //             })
-            //     })
-            //     .then(() => {
-            //         db.Collection.create({
-            //             name: 'test',
-            //             display: true,
-            //             folderId: 1
-            //         })
-            //             .then(() => {
-            //                 console.log('Collection created.')
-            //             })
-            //             .catch((error) => {
-            //                 console.error(error)
-            //             })
-            //     })
-            //     .then(() => {
-            //         db.Collection.create({
-            //             name: 'test',
-            //             display: true,
-            //             folderId: 2
-            //         })
-            //             .then(() => {
-            //                 console.log('Collection created.')
-            //             })
-            //             .catch((error) => {
-            //                 console.error(error)
-            //             })
-            //     })
-            //     .then(() => {
-            //         db.Block.create({
-            //             title: 'test',
-            //             type: 'image',
-            //             description: 'this is test image',
-            //             bookmark: true,
-            //             collectionId: 1
-            //         })
-            //             .then(() => {
-            //                 console.log('Block created.')
-            //             })
-            //             .catch((error) => {
-            //                 console.error(error)
-            //             })
-            //     })
-            //     .then(async () => {
-            //         let query = await db.Folder.findAll({
-            //             include: { all: true, nested: true }
-            //         })
-            //         console.log(JSON.stringify(query, null, 2))
-            //     })
-            //     .catch((error) => {
-            //         console.error('Unable to connect to the database:', error);
-            //     })
         });
     }
     onWindowAllClosed() {
@@ -311,6 +274,472 @@ class FileChannel {
     }
 }
 exports.FileChannel = FileChannel;
+
+
+/***/ }),
+
+/***/ "./main/models sync recursive ^\\.\\/.*$":
+/*!***********************************!*\
+  !*** ./main/models sync ^\.\/.*$ ***!
+  \***********************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var map = {
+	"./": "./main/models/index.ts",
+	"./block": "./main/models/block.js",
+	"./block.js": "./main/models/block.js",
+	"./blockfile": "./main/models/blockfile.js",
+	"./blockfile.js": "./main/models/blockfile.js",
+	"./collection": "./main/models/collection.js",
+	"./collection.js": "./main/models/collection.js",
+	"./file": "./main/models/file.js",
+	"./file.js": "./main/models/file.js",
+	"./folder": "./main/models/folder.js",
+	"./folder.js": "./main/models/folder.js",
+	"./index": "./main/models/index.ts",
+	"./index.ts": "./main/models/index.ts",
+	"./node.model": "./main/models/node.model.ts",
+	"./node.model.ts": "./main/models/node.model.ts",
+	"./test": "./main/models/test.js",
+	"./test.js": "./main/models/test.js",
+	"./user": "./main/models/user.js",
+	"./user.js": "./main/models/user.js",
+	"./user.model": "./main/models/user.model.ts",
+	"./user.model.ts": "./main/models/user.model.ts"
+};
+
+
+function webpackContext(req) {
+	var id = webpackContextResolve(req);
+	return __webpack_require__(id);
+}
+function webpackContextResolve(req) {
+	if(!__webpack_require__.o(map, req)) {
+		var e = new Error("Cannot find module '" + req + "'");
+		e.code = 'MODULE_NOT_FOUND';
+		throw e;
+	}
+	return map[req];
+}
+webpackContext.keys = function webpackContextKeys() {
+	return Object.keys(map);
+};
+webpackContext.resolve = webpackContextResolve;
+module.exports = webpackContext;
+webpackContext.id = "./main/models sync recursive ^\\.\\/.*$";
+
+/***/ }),
+
+/***/ "./main/models/block.js":
+/*!******************************!*\
+  !*** ./main/models/block.js ***!
+  \******************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+module.exports = (sequelize, DataTypes) => {
+  const Block = sequelize.define('Block', {
+    title: DataTypes.STRING,
+    type: {
+      type: DataTypes.ENUM,
+      values: ['text', 'image', 'audio', 'video']
+    },
+    description: DataTypes.TEXT,
+    bookmark: DataTypes.BOOLEAN,
+    collectionId: DataTypes.INTEGER
+  }, {});
+
+  // Block.updateTitle = async (id, title) => {
+  //   try {
+  //     await Block.update({
+  //       title: title
+  //     }, {
+  //       where: { id: id }
+  //     })
+  //   } catch (err) {
+  //     console.error(err)
+  //   }
+  // }
+
+  // Block.updateDescription = async (id, des) => {
+  //   try {
+  //     await Block.update({
+  //       description: des
+  //     }, {
+  //       where: { id: id }
+  //     })
+  //   } catch (err) {
+  //     console.error(err)
+  //   }
+  // }
+
+  // Block.updateBookmark = async (id, bookmark) => {
+  //   try {
+  //     await Block.update({
+  //       bookmark: bookmark
+  //     }, {
+  //       where: { id: id }
+  //     })
+  //   } catch (err) {
+  //     console.error(err)
+  //   }
+  // }
+
+  Block.associate = function (models) {
+    // associations can be defined here
+    Block.belongsTo(models.Collection, { foreignKey: 'collectionId', as: 'collection' })
+    Block.belongsToMany(models.File, { through: 'BlockFile', foreignKey: 'blockId', as: 'files' })
+  };
+  return Block;
+};
+
+
+/***/ }),
+
+/***/ "./main/models/blockfile.js":
+/*!**********************************!*\
+  !*** ./main/models/blockfile.js ***!
+  \**********************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+module.exports = (sequelize, DataTypes) => {
+  const BlockFile = sequelize.define('BlockFile', {
+    blockId: DataTypes.INTEGER,
+    fileId: DataTypes.INTEGER
+  }, {});
+
+  BlockFile.associate = function (models) {
+    // associations can be defined here
+    BlockFile.belongsTo(models.Block, { foreignKey: 'blockId' })
+    BlockFile.belongsTo(models.File, { foreignKey: 'fileId' })
+  };
+  return BlockFile;
+};
+
+
+/***/ }),
+
+/***/ "./main/models/collection.js":
+/*!***********************************!*\
+  !*** ./main/models/collection.js ***!
+  \***********************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+module.exports = (sequelize, DataTypes) => {
+  const Collection = sequelize.define('Collection', {
+    name: DataTypes.STRING,
+    display: DataTypes.BOOLEAN,
+    folderId: DataTypes.INTEGER
+  }, {})
+
+  // Collection.createOne = async (name, folderId) => {
+  //   try {
+  //     Collection.create({
+  //       collectionName: name,
+  //       display: true,
+  //       folderId: folderId
+  //     })
+  //   } catch (err) {
+  //     console.error(err)
+  //   }
+  // }
+
+  // Collection.updateName = async (id, name) => {
+  //   try {
+  //     await Collection.update({
+  //       name: name
+  //     }, {
+  //       where: { id: id }
+  //     })
+  //   } catch (err) {
+  //     console.error(err)
+  //   }
+  // }
+
+  Collection.associate = function (models) {
+    // associations can be defined here
+    Collection.belongsTo(models.Folder, { foreignKey: 'folderId', as: 'folders' })
+    Collection.hasMany(models.Block, { foreignKey: 'collectionId', as: 'blocks' })
+  };
+  return Collection;
+};
+
+
+/***/ }),
+
+/***/ "./main/models/file.js":
+/*!*****************************!*\
+  !*** ./main/models/file.js ***!
+  \*****************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+module.exports = (sequelize, DataTypes) => {
+  const File = sequelize.define('File', {
+    name: DataTypes.STRING,
+    path: DataTypes.STRING
+  }, {});
+
+  File.associate = function (models) {
+    // associations can be defined here
+    File.belongsToMany(models.Block, { through: 'BlockFile', foreignKey: 'fileId', as: 'blocks' })
+  };
+
+  return File;
+};
+
+
+/***/ }),
+
+/***/ "./main/models/folder.js":
+/*!*******************************!*\
+  !*** ./main/models/folder.js ***!
+  \*******************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+module.exports = (sequelize, DataTypes) => {
+  const Folder = sequelize.define('Folder', {
+    name: DataTypes.STRING
+  }, {});
+
+  Folder.associate = function (models) {
+    // associations can be defined here
+    Folder.hasMany(models.Collection, { foreignKey: 'folderId', as: 'collections' })
+  };
+  return Folder;
+};
+
+
+/***/ }),
+
+/***/ "./main/models/index.ts":
+/*!******************************!*\
+  !*** ./main/models/index.ts ***!
+  \******************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(__filename) {
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.DBCreate = void 0;
+const fs = __importStar(__webpack_require__(/*! fs */ "fs"));
+const path = __importStar(__webpack_require__(/*! path */ "path"));
+const sequelize_1 = __webpack_require__(/*! sequelize */ "sequelize");
+// // import { config } from '../config/config.ts';
+const basename = path.basename(__filename);
+const env = process.env.NOD;
+const db = {};
+let sequelize;
+sequelize = new sequelize_1.Sequelize({
+    dialect: 'sqlite',
+    storage: 'main/db.sqlite3'
+});
+const dir = path.join(__dirname, '../main/models');
+class DBCreate {
+    static create() {
+        return __awaiter(this, void 0, void 0, function* () {
+            /** 1 Process each file and extract the model to db object */
+            yield this.fileprocess();
+            /** 2 Add the sequelize and Sequelize attributes */
+            db.sequelize = sequelize;
+            db.Sequelize = sequelize_1.Sequelize;
+            return db;
+        });
+    }
+    static fileprocess() {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield fs
+                .readdirSync(dir)
+                .filter((file) => {
+                return (file.indexOf('.') !== 0) && (file !== 'index.ts') && (file.slice(-3) === '.ts');
+            })
+                .forEach((file) => __awaiter(this, void 0, void 0, function* () {
+                const module = yield Promise.resolve().then(() => __importStar(__webpack_require__("./main/models sync recursive ^\\.\\/.*$")(`./${file}`)));
+                const key = Object.keys(module)[0];
+                const value = Object.values(module)[0];
+                db[key] = value;
+            }));
+        });
+    }
+}
+exports.DBCreate = DBCreate;
+
+/* WEBPACK VAR INJECTION */}.call(this, "/index.js"))
+
+/***/ }),
+
+/***/ "./main/models/node.model.ts":
+/*!***********************************!*\
+  !*** ./main/models/node.model.ts ***!
+  \***********************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.Node = void 0;
+const sequelize_1 = __webpack_require__(/*! sequelize */ "sequelize");
+const config_1 = __webpack_require__(/*! ../config/config */ "./main/config/config.ts");
+class Node extends sequelize_1.Model {
+}
+exports.Node = Node;
+Node.init({
+    id: {
+        type: sequelize_1.DataTypes.INTEGER.UNSIGNED,
+        autoIncrement: true,
+        primaryKey: true,
+    },
+    name: {
+        type: new sequelize_1.DataTypes.STRING(128),
+        allowNull: false,
+    }
+}, {
+    tableName: "nodes",
+    sequelize: config_1.database,
+});
+Node.sync({ force: true }).then(() => console.log("Node table created"));
+
+
+/***/ }),
+
+/***/ "./main/models/test.js":
+/*!*****************************!*\
+  !*** ./main/models/test.js ***!
+  \*****************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+
+// import * as fs from 'fs';
+// import * as path from 'path';
+// import { Sequelize } from 'sequelize';
+// import { config } from '../config/config.ts';
+// const basename = path.basename(__filename);
+// const env = process.env.NODE_ENV || 'development';
+// const db = {};
+
+
+// let sequelize;
+// if (config.use_env_variable) {
+//   sequelize = new Sequelize(process.env[config.use_env_variable], config);
+// } else {
+//   sequelize = new Sequelize(config.database, config.username, config.password, config);
+// }
+
+// fs
+//   .readdirSync(__dirname)
+//   .filter(file => {
+//     return (file.indexOf('.') !== 0) && (file !== basename) && (file.slice(-3) === '.js');
+//   })
+//   .forEach(file => {
+//     // const model = sequelize['import'](path.join(__dirname, file));
+//     const model = require(path.join(__dirname, file))(sequelize, Sequelize)
+//     db[model.name] = model;
+//   });
+
+// Object.keys(db).forEach(modelName => {
+//   if (db[modelName].associate) {
+//     db[modelName].associate(db);
+//   }
+// });
+
+// db.sequelize = sequelize;
+// db.Sequelize = Sequelize;
+
+// export default db;
+
+
+/***/ }),
+
+/***/ "./main/models/user.js":
+/*!*****************************!*\
+  !*** ./main/models/user.js ***!
+  \*****************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+module.exports = (sequelize, DataTypes) => {
+  const User = sequelize.define('User', {
+    name: DataTypes.STRING,
+    email: DataTypes.STRING,
+    password: DataTypes.STRING,
+    passwordConfirm: DataTypes.STRING
+  }, {});
+  
+  User.associate = function (models) {
+    // associations can be defined here
+  };
+  return User;
+};
+
+
+/***/ }),
+
+/***/ "./main/models/user.model.ts":
+/*!***********************************!*\
+  !*** ./main/models/user.model.ts ***!
+  \***********************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.User = void 0;
+const sequelize_1 = __webpack_require__(/*! sequelize */ "sequelize");
+class User extends sequelize_1.Model {
+}
+exports.User = User;
 
 
 /***/ }),
