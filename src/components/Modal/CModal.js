@@ -1,11 +1,12 @@
 /* eslint-disable react/prop-types */
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import React, { useState, useContext } from "react";
 import Modal from "react-bootstrap/Modal";
 import { StoreUpdateContext } from "../../context";
 
 export default function CModal({ id, folderId, title, modalShow, modalFunc, handleModalToggle }) {
     const [newTitle, setNewTitle] = useState(title);
-    const { addFolder, updateCollectionTitle, deleteCollection, addCollection } = useContext(StoreUpdateContext);
+    const { addCollection, addFolder, updateCollectionTitle, deleteCollection } = useContext(StoreUpdateContext);
 
     const handleTitleChange = (event) => {
         setNewTitle(event.target.value);
@@ -19,14 +20,14 @@ export default function CModal({ id, folderId, title, modalShow, modalFunc, hand
         deleteCollection(noteId);
         handleModalToggle();
     };
-    const handleFolderCreate = (folderName) => {
+    const handleFolderCreate = () => {
         addFolder(newTitle);
         handleModalToggle();
     };
     const handleNoteCreate = (title, folderId) => {
-        addCollection(title, folderId)
+        addCollection(title, folderId);
         handleModalToggle();
-    }
+    };
 
     var modalDialog;
     switch (modalFunc) {
@@ -64,7 +65,7 @@ export default function CModal({ id, folderId, title, modalShow, modalFunc, hand
                         <i
                             className="modal_icon fas fa-check-circle"
                             onClick={() => {
-                                handleFolderCreate(newTitle);
+                                handleFolderCreate();
                             }}
                         ></i>
                         <i className="modal_icon fas fa-times-circle" onClick={handleModalToggle}></i>
@@ -85,7 +86,7 @@ export default function CModal({ id, folderId, title, modalShow, modalFunc, hand
                         <i
                             className="modal_icon fas fa-check-circle"
                             onClick={() => {
-                                handleNoteCreate(newTitle, folderId)
+                                handleNoteCreate(newTitle, folderId);
                             }}
                         ></i>
                         <i className="modal_icon fas fa-times-circle" onClick={handleModalToggle}></i>
