@@ -1,4 +1,4 @@
-import { BrowserWindow, ipcMain } from "electron";
+import { BrowserWindow } from "electron";
 import { BaseWindow } from "./base-window";
 import isDev from "electron-is-dev";
 import path from "path";
@@ -14,6 +14,7 @@ export class ControlWindow extends BaseWindow {
             width: 700,
             height: 400,
             webPreferences: {
+                enableRemoteModule: true,
                 contextIsolation: true,
                 preload: path.resolve(__dirname, "preload.js"),
             },
