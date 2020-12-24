@@ -1,27 +1,30 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-import React, { useState } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import appRuntime from "../appRuntime";
-// import { VideoRecorder } from "../media-api/video-recorder";
+import { ControlContext } from "../context/controlContext";
 
 export default function ControlBar() {
-    // const [videoState, setVideoState] = useState(false);
-    appRuntime.subscribe("bindControl", (data) => {
-        // console.log("collectionId front: ", data);
-    });
+    const { mapCId } = useContext(ControlContext);
+    const [currentCId, setCurrentCId] = useState(mapCId);
+    useEffect(() => {
+        appRuntime.subscribe("changed", (data) => {
+            setCurrentCId(data);
+        });
+    }, [currentCId]);
+
     const handleFullsnip = () => {
-        // Refactor later
-        appRuntime.send("system-channel", "getUserPath");
-        appRuntime.subscribeOnce("system-channel", (userPath) => {
-            appRuntime.send("system-channel", "getScreenshotSize");
-            appRuntime.subscribeOnce("system-channel", (screenshotSize) => {
-                appRuntime.fullsnip(userPath, screenshotSize);
-            });
+        appRuntime.send("system-channel", "getScreenShot");
+        appRuntime.subscribeOnce("system-channel", (screenShotInfo) => {
+            const { width, height, userPath } = screenShotInfo;
+            const currentWork = currentCId === undefined ? mapCId : currentCId;
+            appRuntime.fullsnip(userPath, { width, height }, currentWork);
         });
     };
 
     return (
         <div>
+            <h1> map: {currentCId === undefined ? mapCId : currentCId}</h1>
             <button id="textButton">text</button>
             <button id="dragsnipButton">dragsnip</button>
             <button

@@ -18,7 +18,7 @@ contextBridge.exposeInMainWorld("appRuntime", {
         const subscription = (event, ...args) => listener(...args);
         ipcRenderer.once(channel, subscription);
     },
-    fullsnip: (userPath, thumbSize) => {
-        takeScreenshot(userPath, thumbSize);
+    fullsnip: (userPath, thumbSize, currentWork) => {
+        takeScreenshot(userPath, thumbSize, currentWork);
     },
 });

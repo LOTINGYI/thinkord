@@ -15,8 +15,7 @@ export class TestChannel extends BaseChannel {
                     this[command](event, args);
                     break;
                 default:
-                    // eslint-disable-next-line no-console
-                    log.warn("There is no command in thic channel");
+                    log.warn("There is no command in this channel");
                     break;
             }
         });

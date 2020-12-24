@@ -28,7 +28,6 @@ const Tab = ({ location, history, id, tabId, title }) => {
             className={classes.Tab}
             activeClassName={classes.active}
             onClick={() => {
-                console.log(id);
                 appRuntime.send("window-channel", "create", { id });
             }}
         >
