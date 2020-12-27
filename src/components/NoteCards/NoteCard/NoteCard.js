@@ -30,7 +30,7 @@ function NoteCard({ collection }) {
     const tabAdd = useContext(TabsContext).addTab;
     const handleTabAdd = () => {
         tabAdd(name, id);
-        appRuntime.send("window-channel", "create", { id });
+        appRuntime.send("window-channel", "createControlBar", { id });
     };
 
     // const handleBookmarkChanged = (noteId) => {
@@ -75,7 +75,7 @@ function NoteCard({ collection }) {
                     className="card-record-anchor"
                     to={`/work/${id}`}
                     onClick={() => {
-                        appRuntime.send("window-channel", "create");
+                        appRuntime.send("window-channel", "createControlBar");
                     }}
                 >
                     <i className="far fa-dot-circle"></i>

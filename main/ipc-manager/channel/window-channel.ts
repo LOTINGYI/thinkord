@@ -3,6 +3,7 @@ import log from "loglevel";
 import { BaseChannel } from "./base-channel";
 import { ControlWindow } from "../../windows/control-window";
 import { IpcRequest } from "../../shared/IpcRequest";
+import { HomeWindow } from "../../windows/home-window";
 interface BrowserWindows {
     [key: string]: ControlWindow | undefined;
 }
@@ -10,7 +11,7 @@ interface BrowserWindows {
 export class WindowChannel extends BaseChannel {
     wins: BrowserWindows;
 
-    constructor(props: any) {
+    constructor(props: string) {
         super(props);
         this.wins = {};
     }
@@ -18,9 +19,10 @@ export class WindowChannel extends BaseChannel {
     public handleRequest(): void {
         ipcMain.on(this.channelName!, (event: IpcMainEvent, command: string, args: IpcRequest) => {
             switch (command) {
-                case "create":
-                case "close":
-                    this[command](args);
+                case "createControlBar":
+                case "closeControlBar":
+                case "captureSignal":
+                    this[command](event, args);
                     break;
                 default:
                     log.warn("There is no command in this channel");
@@ -36,21 +38,28 @@ export class WindowChannel extends BaseChannel {
     }
 
     /** Start operation */
-    public create(args: IpcRequest): void {
+    public createControlBar(event: IpcMainEvent, args: IpcRequest): void {
         if (!this.wins.controlWindow) {
             this.wins.controlWindow = new ControlWindow();
-            this.wins.controlWindow.createWindow(args.id);
+            this.wins.controlWindow.createWindow();
             this.wins.controlWindow.register();
         } else {
-            this.wins.controlWindow.sendMessage("changed", args.id);
+            // Transfer information to different frame
+            ControlWindow.sendMessage("changed", args.id);
         }
     }
 
-    public close(): void {
+    public closeControlBar(): void {
         if (this.wins.controlWindow) {
             this.wins.controlWindow.closeWindow();
             this.deleteRequest("test-channel");
+            this.deleteRequest("system-channel");
             this.wins.controlWindow = undefined;
         }
+    }
+
+    public captureSignal(event: IpcMainEvent, args: IpcRequest): void {
+        // Transfer information to different frame
+        HomeWindow.sendMessage("capture", "hello");
     }
 }

@@ -6,8 +6,8 @@ import { CollectionTitle } from "./Title";
 import Block from "./Block";
 import InputContainer from "../Input/InputContainer";
 import { BlockContext } from "../../context/blockContext";
-
-export default function Collection({ collection }) {
+import { withRouter } from "react-router-dom";
+function Collection() {
     const { collectionInfo } = useContext(BlockContext);
     return (
         <>
@@ -33,8 +33,10 @@ export default function Collection({ collection }) {
                     </Paper>
                 </div>
             ) : (
-                <h1>Loading</h1>
-            )}
+                    <h1>Loading</h1>
+                )}
         </>
     );
 }
+
+export default withRouter(Collection);

@@ -12,6 +12,7 @@ export class MediaChannel extends BaseChannel {
             switch (command) {
                 case "fullsnip":
                 case "handleVideo":
+                case "test":
                     this[command](event, args);
                     break;
                 default:
@@ -46,5 +47,9 @@ export class MediaChannel extends BaseChannel {
         const status = args.status;
         // if (status === false) VideoRecorder.start();
         // else if (status === true) VideoRecorder.stop();
+    }
+
+    private test(event: IpcMainEvent, args: IpcRequest): void {
+        event.reply("hey", "yo");
     }
 }

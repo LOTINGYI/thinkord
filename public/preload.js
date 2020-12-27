@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 const { contextBridge, ipcRenderer } = require("electron");
-const { takeScreenshot } = require("../src/media-api/fullsnip");
+const { takeScreenshot } = require("./media-api/fullsnip");
 
 contextBridge.exposeInMainWorld("appRuntime", {
     send: (channel, command, args) => {
@@ -13,6 +13,9 @@ contextBridge.exposeInMainWorld("appRuntime", {
         return () => {
             ipcRenderer.removeListener(channel, subscription);
         };
+    },
+    unsubscribe: (channel) => {
+        ipcRenderer.removeAllListeners(channel);
     },
     subscribeOnce: (channel, listener) => {
         const subscription = (event, ...args) => listener(...args);

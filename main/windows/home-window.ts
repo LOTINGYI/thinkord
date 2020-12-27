@@ -6,19 +6,20 @@ import { Factory } from "../ipc-manager/usage/factory";
 import { UsageChannel } from "../ipc-manager/usage/usage-channel";
 
 export class HomeWindow extends BaseWindow {
-    private static win?: BrowserWindow | null;
+    static win?: BrowserWindow | null;
 
     public createWindow(): void {
         HomeWindow.win = new BrowserWindow({
-            width: 800,
-            height: 600,
+            width: 1980,
+            height: 1620,
             webPreferences: {
                 enableRemoteModule: true,
                 contextIsolation: true,
+                nodeIntegration: false,
                 preload: path.resolve(__dirname, "preload.js"),
             },
         });
-
+        HomeWindow.win.webContents.openDevTools();
         HomeWindow.win.loadURL(
             isDev ? "http://localhost:3000" : `file://${path.join(__dirname, "../build/index.html")}`
         );
@@ -33,10 +34,20 @@ export class HomeWindow extends BaseWindow {
     }
 
     public register(): void {
-        new UsageChannel(new Factory()).setHomeFactory().map((obj) => {
-            obj.handleRequest();
-            obj.handleRequestOnce();
-            return obj;
-        });
+        if (HomeWindow.win) {
+            new UsageChannel(new Factory()).setHomeFactory().map((obj) => {
+                obj.handleRequest();
+                obj.handleRequestOnce();
+                return obj;
+            });
+        }
+    }
+
+    public closeWindow(): void {
+        HomeWindow.win?.close();
+    }
+
+    public static sendMessage(response: string, data: string): void {
+        HomeWindow.win?.webContents.send(response, data);
     }
 }

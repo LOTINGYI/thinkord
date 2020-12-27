@@ -9,7 +9,6 @@ const { desktopCapturer, ipcRenderer } = require("electron");
 // Third-party modules
 const { v4: uuidv4 } = require("uuid");
 const log = require("loglevel");
-
 log.setLevel("info");
 
 const takeScreenshot = async (userPath, thumbSize, currentWork) => {
@@ -27,6 +26,7 @@ const takeScreenshot = async (userPath, thumbSize, currentWork) => {
                     path: screenshotPath,
                     current: currentWork,
                 });
+                ipcRenderer.send("window-channel", "captureSignal", "data");
                 log.info("Screenshot has been saved successfully");
             } catch (err) {
                 throw err;

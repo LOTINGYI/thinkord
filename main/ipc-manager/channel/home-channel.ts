@@ -6,21 +6,11 @@ import { BaseChannel } from "./base-channel";
 import { Folder, Collection, Block } from "../../models";
 import { IpcRequest } from "../../shared/IpcRequest";
 
-const map = new Map([
-    ["getHomeData", "loadData"],
-    ["getCollection", "loadData"],
-    ["addFolder", "updateData"],
-    ["addBlock", "updateData"],
-    ["deleteBlock", "updateData"],
-    ["addCollection", "updateData"],
-    ["orderCollection", "updateData"],
-]);
 export class HomeChannel extends BaseChannel {
     private collectionId: string | undefined;
     public handleRequest(): void {
         ipcMain.on(this.channelName!, (event: IpcMainEvent, command: string, args: IpcRequest) => {
             switch (command) {
-                case "getAllData":
                 case "addFolder":
                 case "addBlock":
                 case "addCollection":
@@ -30,6 +20,7 @@ export class HomeChannel extends BaseChannel {
                 case "deleteBlock":
                 case "getHomeData":
                 case "getCollection":
+                case "getBlocks":
                 case "getCID":
                     this[command](event, args);
                     break;
@@ -68,45 +59,47 @@ export class HomeChannel extends BaseChannel {
         event.reply("loadData", data);
     }
 
-    private async getCID(event: IpcMainEvent): Promise<void> {
-        event.reply("getCID", this.collectionId);
-    }
-
-    private async getAllData(event: IpcMainEvent): Promise<void> {
-        const query = await Folder.findAll({
-            include: { all: true, nested: true },
+    private async getBlocks(event: IpcMainEvent, args: IpcRequest): Promise<void> {
+        this.collectionId = args.id;
+        const query = await Collection.findOne({
+            where: { id: args.id },
+            include: [Collection.associations.blocks],
         });
         const data = JSON.stringify(query, null, 2);
         event.reply("loadData", data);
     }
 
-    async addFolder(event: IpcMainEvent, args: IpcRequest): Promise<void> {
+    private async getCID(event: IpcMainEvent): Promise<void> {
+        event.reply("getCID", this.collectionId);
+    }
+
+    private async addFolder(event: IpcMainEvent, args: IpcRequest): Promise<void> {
         const name = args.name.toString();
         const data = await Folder.create({ name });
-        event.reply("updateData", JSON.stringify(data, null, 2));
+        // event.reply("updateData", JSON.stringify(data, null, 2));
     }
 
     private async addBlock(event: IpcMainEvent, args: IpcRequest): Promise<void> {
         const { title, type, description, id } = args;
         const collectionId = parseInt(id);
         const data = await Block.create({ title, type, description, collectionId });
-        event.reply("updateData", JSON.stringify(data, null, 2));
+        // event.reply("updateData", JSON.stringify(data, null, 2));
     }
 
     private async deleteBlock(event: IpcMainEvent, args: IpcRequest): Promise<void> {
         const { blockId } = args;
         await Block.destroy({ where: { id: blockId } });
-        event.reply("updateData");
+        // event.reply("updateData");
     }
 
-    async addCollection(event: IpcMainEvent, args: IpcRequest): Promise<void> {
+    private async addCollection(event: IpcMainEvent, args: IpcRequest): Promise<void> {
         const { folderId } = args;
         const id = parseInt(folderId);
         const data = await Collection.create({ name: args.title.toString(), folderId: id });
-        event.reply("updateData", JSON.stringify(data, null, 2));
+        // event.reply("updateData", JSON.stringify(data, null, 2));
     }
 
-    async deleteCollection(event: IpcMainEvent, args: IpcRequest): Promise<void> {
+    private async deleteCollection(event: IpcMainEvent, args: IpcRequest): Promise<void> {
         await Collection.destroy({
             where: {
                 id: args,
@@ -114,12 +107,12 @@ export class HomeChannel extends BaseChannel {
         });
     }
 
-    async orderCollection(event: IpcMainEvent): Promise<void> {
+    private async orderCollection(event: IpcMainEvent): Promise<void> {
         const data = await Collection.findAll({ order: [["updatedAt", "DESC"]] });
-        event.reply("updateData", JSON.stringify(data, null, 2));
+        // event.reply("updateData", JSON.stringify(data, null, 2));
     }
 
-    async updateCollection(event: IpcMainEvent, args: IpcRequest): Promise<void> {
+    private async updateCollection(event: IpcMainEvent, args: IpcRequest): Promise<void> {
         log.info("frontend update collection: ", args);
         const { title, collectionId } = args;
         Collection.update({ name: title }, { where: { id: collectionId } });

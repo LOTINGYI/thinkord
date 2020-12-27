@@ -10,21 +10,19 @@ class BlockProvider extends Component {
         changed: false,
     };
     componentDidMount() {
-        appRuntime.send("home-channel", "getCollection", this.props.children.props.collection);
+        appRuntime.subscribe("capture", (data) => {
+            this.setState({ changed: true });
+        });
+        appRuntime.send("home-channel", "getBlocks", { id: this.props.cId });
         appRuntime.subscribeOnce("loadData", (data) => {
             this.setState({
                 collectionInfo: JSON.parse(data),
             });
         });
     }
-    componentDidUpdate(prevProps) {
-        if (prevProps.children.props.collection !== this.props.children.props.collection) {
-            this.setState({
-                collectionInfo: this.props.children.props.collection,
-            });
-        }
+    componentDidUpdate() {
         if (this.state.changed) {
-            appRuntime.send("home-channel", "getCollection", this.props.children.props.collection);
+            appRuntime.send("home-channel", "getBlocks", { id: this.props.cId });
             appRuntime.subscribeOnce("loadData", (data) => {
                 this.setState({
                     collectionInfo: JSON.parse(data),
@@ -34,6 +32,11 @@ class BlockProvider extends Component {
         }
     }
 
+    getBlocks = (id) => {
+        appRuntime.send("home-channel", "getBlocks", id);
+        this.setState({ changed: true });
+    };
+
     addBlock = (title, type, description, id) => {
         const newBlock = {
             title,
@@ -41,9 +44,7 @@ class BlockProvider extends Component {
             description,
             id,
         };
-
         appRuntime.send("home-channel", "addBlock", newBlock);
-        appRuntime.subscribeOnce("updateData");
         this.setState({ changed: true });
     };
 
@@ -54,7 +55,6 @@ class BlockProvider extends Component {
         };
 
         appRuntime.send("home-channel", "deleteBlock", block);
-        appRuntime.subscribeOnce("updateData");
         this.setState({ changed: true });
     };
 
@@ -64,6 +64,7 @@ class BlockProvider extends Component {
                 <BlockContext.Provider value={{ ...this.state }}>
                     <BlockUpdateContext.Provider
                         value={{
+                            getBlocks: this.getBlocks,
                             addBlock: this.addBlock,
                             deleteBlock: this.deleteBlock,
                         }}
